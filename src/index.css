@@ -169,6 +169,7 @@ progress {
 
 .answer {
   transform: translateX(2rem);
+  background-color: cadetblue;
 }
 
 .result {
