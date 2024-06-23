@@ -6,6 +6,7 @@ import React, { useEffect, useReducer } from "react";
 import StartScreen from "./StartScreen";
 import Question from "./Question";
 import NextButton from "./NextButton";
+import Progress from "./Progress";
 
 const initialState = {
   questions: [],
@@ -85,6 +86,16 @@ function App() {
         )}
         {state === "active" && (
           <>
+            <Progress
+              index={index}
+              maxQuestions={questions.length}
+              answer={answers[index]}
+              points={points}
+              maxPoints={questions.reduce(
+                (prev, curr) => prev + curr.points,
+                0
+              )}
+            />
             <Question
               question={questions[index]}
               answered={answers[index]}
