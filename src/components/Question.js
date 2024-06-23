@@ -7,10 +7,24 @@ function Question({ question, dispatch, answered }) {
         {question.options.map((opt, i) => (
           <button
             key={opt}
-            className={`btn btn-option ${
-              answered !== undefined && answered === i ? "answer" : ""
+            className={`btn btn-option ${answered === i ? "answer" : ""}
+            ${
+              answered !== undefined
+                ? i === question.correctOption
+                  ? "correct"
+                  : "wrong"
+                : ""
             }`}
-            onClick={() => dispatch({ type: "submitAnswer", payload: i })}
+            onClick={() =>
+              dispatch({
+                type: "selectOption",
+                payload: {
+                  selectedOpt: i,
+                  correctOpt: question.correctOption,
+                  points: question.points,
+                },
+              })
+            }
           >
             {opt}
           </button>

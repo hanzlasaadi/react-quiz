@@ -14,6 +14,8 @@ const initialState = {
   index: 0,
   // array of answers for each question
   answers: [],
+  // points
+  points: 0,
 };
 
 const reducer = function (currState, action) {
@@ -29,17 +31,28 @@ const reducer = function (currState, action) {
       return { ...currState, state: "error" };
     case "start":
       return { ...currState, state: "active" };
-    case "submitAnswer":
+    case "selectOption":
       let copyArr = [...currState.answers];
-      copyArr[currState.index] = action.payload;
-      return { ...currState, answers: copyArr };
+      copyArr[currState.index] = action.payload.selectedOpt;
+      // update points
+      if (action.payload.selectedOpt === action.payload.correctOpt) {
+        return {
+          ...currState,
+          answers: copyArr,
+          points: currState.points + action.payload.points,
+        };
+      } else return { ...currState, answers: copyArr };
+
+    // TODO change the functionality so that there's a way to change your selection and then lock it after
+    // case "submitAnswer":
+    //   return;
     default:
       throw new Error("No Action Found");
   }
 };
 
 function App() {
-  const [{ questions, answers, state, index }, dispatch] = useReducer(
+  const [{ questions, answers, points, state, index }, dispatch] = useReducer(
     reducer,
     initialState
   );
@@ -71,6 +84,7 @@ function App() {
             question={questions[index]}
             answered={answers[index]}
             dispatch={dispatch}
+            points={points}
           />
         )}
       </Main>
