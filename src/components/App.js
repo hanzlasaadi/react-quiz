@@ -4,12 +4,15 @@ import Loader from "./Loader";
 import Main from "./Main";
 import React, { useEffect, useReducer } from "react";
 import StartScreen from "./StartScreen";
+import Question from "./Question";
 
 const initialState = {
   questions: [],
 
   // loading, fetched, error, active, finished
   state: "loading",
+
+  index: 0,
 };
 
 const reducer = function (currState, action) {
@@ -18,13 +21,18 @@ const reducer = function (currState, action) {
       return { ...currState, state: "fetched", questions: action.payload };
     case "error":
       return { ...currState, state: "error" };
+    case "start":
+      return { ...currState, state: "active" };
     default:
       throw new Error("No Action Found");
   }
 };
 
 function App() {
-  const [{ questions, state }, dispatch] = useReducer(reducer, initialState);
+  const [{ questions, state, index }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
 
   useEffect(() => {
     async function fetchQuestions() {
@@ -45,7 +53,12 @@ function App() {
       <Main>
         {state === "loading" && <Loader />}
         {state === "error" && <Error />}
-        {state === "fetched" && <StartScreen length={questions.length} />}
+        {state === "fetched" && (
+          <StartScreen length={questions.length} dispatch={dispatch} />
+        )}
+        {state === "active" && (
+          <Question question={questions[index]} dispatch={dispatch} />
+        )}
       </Main>
     </div>
   );
