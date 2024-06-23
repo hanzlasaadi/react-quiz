@@ -45,7 +45,7 @@ function App() {
       <Main>
         {state === "loading" && <Loader />}
         {state === "error" && <Error />}
-        {state === "fetched" && <StartScreen />}
+        {state === "fetched" && <StartScreen length={questions.length} />}
       </Main>
     </div>
   );
