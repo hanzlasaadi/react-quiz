@@ -5,6 +5,7 @@ import Main from "./Main";
 import React, { useEffect, useReducer } from "react";
 import StartScreen from "./StartScreen";
 import Question from "./Question";
+import NextButton from "./NextButton";
 
 const initialState = {
   questions: [],
@@ -46,6 +47,9 @@ const reducer = function (currState, action) {
     // TODO change the functionality so that there's a way to change your selection and then lock it after
     // case "submitAnswer":
     //   return;
+
+    case "next":
+      return { ...currState, index: currState.index + 1 };
     default:
       throw new Error("No Action Found");
   }
@@ -80,12 +84,15 @@ function App() {
           <StartScreen length={questions.length} dispatch={dispatch} />
         )}
         {state === "active" && (
-          <Question
-            question={questions[index]}
-            answered={answers[index]}
-            dispatch={dispatch}
-            points={points}
-          />
+          <>
+            <Question
+              question={questions[index]}
+              answered={answers[index]}
+              dispatch={dispatch}
+              points={points}
+            />
+            <NextButton dispatch={dispatch} answer={answers[index]} />
+          </>
         )}
       </Main>
     </div>
