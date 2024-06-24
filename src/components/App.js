@@ -8,6 +8,10 @@ import Question from "./Question";
 import NextButton from "./NextButton";
 import Progress from "./Progress";
 import FinishScreen from "./FinishScreen";
+import Timer from "./Timer";
+import Footer from "./Footer";
+
+const TIME_FOR_QUES = 15;
 
 const initialState = {
   questions: [],
@@ -20,6 +24,7 @@ const initialState = {
   // points
   points: 0,
   highscore: 0,
+  timeRemaining: 60,
 };
 
 const reducer = function (currState, action) {
@@ -30,6 +35,7 @@ const reducer = function (currState, action) {
         state: "fetched",
         questions: action.payload,
         answers: new Array(action.payload.length),
+        timeRemaining: action.payload.length * TIME_FOR_QUES,
       };
     case "error":
       return { ...currState, state: "error" };
@@ -69,14 +75,19 @@ const reducer = function (currState, action) {
         state: "fetched",
         answers: new Array(currState.questions.length),
       };
+    case "tick":
+      const newTime = currState.timeRemaining - 1;
+      return { ...currState, timeRemaining: newTime };
     default:
       throw new Error("No Action Found");
   }
 };
 
 function App() {
-  const [{ questions, answers, points, highscore, state, index }, dispatch] =
-    useReducer(reducer, initialState);
+  const [
+    { questions, answers, points, highscore, state, index, timeRemaining },
+    dispatch,
+  ] = useReducer(reducer, initialState);
 
   const maxQuestions = questions.length;
   const maxPoints = questions.reduce((prev, curr) => prev + curr.points, 0);
@@ -118,9 +129,12 @@ function App() {
               dispatch={dispatch}
               points={points}
             />
-            <NextButton dispatch={dispatch} answer={answers[index]}>
-              {index < maxQuestions - 1 ? false : true}
-            </NextButton>
+            <Footer>
+              <Timer dispatch={dispatch} timeRemaining={timeRemaining} />
+              <NextButton dispatch={dispatch} answer={answers[index]}>
+                {index < maxQuestions - 1 ? false : true}
+              </NextButton>
+            </Footer>
           </>
         )}
         {state === "finished" && (
