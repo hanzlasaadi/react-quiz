@@ -62,6 +62,13 @@ const reducer = function (currState, action) {
             ? currState.points
             : currState.highscore,
       };
+    case "restart":
+      return {
+        ...initialState,
+        questions: currState.questions,
+        state: "fetched",
+        answers: new Array(currState.questions.length),
+      };
     default:
       throw new Error("No Action Found");
   }
@@ -121,6 +128,7 @@ function App() {
             points={points}
             maxPoints={maxPoints}
             highscore={highscore}
+            dispatch={dispatch}
           />
         )}
       </Main>
